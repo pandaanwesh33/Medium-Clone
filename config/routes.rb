@@ -5,30 +5,32 @@ Rails.application.routes.draw do
   
   #routes for users
   resources :users
-  # resources :articles
+  resources :articles do
+    resources :likes, only: [:create, :destroy]
+  end
   # if I will write the above line,it will automatically create RESTful routes for me
 
   # List all articles
-  get '/articles', to: 'articles#index', as: 'articles'
+  # get '/articles', to: 'articles#index', as: 'articles'
   
   # Show the form for creating a new article
-  get '/articles/new', to: 'articles#new', as: 'new_article'
+  # get '/articles/new', to: 'articles#new', as: 'new_article'
   
   # Create a new article
-  post '/articles', to: 'articles#create'
+  # post '/articles', to: 'articles#create'
   
   # Show a specific article
-  get '/articles/:id', to: 'articles#show', as: 'article'
+  # get '/articles/:id', to: 'articles#show', as: 'article'
   
   # Show the form for editing a specific article
-  get '/articles/:id/edit', to: 'articles#edit', as: 'edit_article'
+  # get '/articles/:id/edit', to: 'articles#edit', as: 'edit_article'
   
   # Update a specific article
-  patch '/articles/:id', to: 'articles#update'
-  put '/articles/:id', to: 'articles#update'
+  # patch '/articles/:id', to: 'articles#update'
+  # put '/articles/:id', to: 'articles#update'
   
   # Delete a specific article
-  delete '/articles/:id', to: 'articles#destroy'
+  # delete '/articles/:id', to: 'articles#destroy'
   
   
 end
