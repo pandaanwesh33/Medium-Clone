@@ -1,9 +1,12 @@
 class ArticlesController < ApplicationController
+
+    # def default_url_options
+    #     { host: request.base_url }
+    # end
+
     skip_before_action :verify_authenticity_token
     
-    def default_url_options
-        { host: request.base_url }
-    end
+    
 
     def new
         @article = Article.new
@@ -56,40 +59,40 @@ class ArticlesController < ApplicationController
 
         @articles = Article.where(nil)
         
-        if params[:author].present?
-            @articles = @articles.where(author: params[:author])
-        end
-        if params[:start_date].present?
-            @articles = @articles.where('publish_date >= ?', params[:start_date]) 
-        end
-        if params[:end_date].present?
-            @articles = @articles.where('publish_date <= ?', params[:end_date]) 
-        end
+        # if params[:author].present?
+        #     @articles = @articles.where(author: params[:author])
+        # end
+        # if params[:start_date].present?
+        #     @articles = @articles.where('publish_date >= ?', params[:start_date]) 
+        # end
+        # if params[:end_date].present?
+        #     @articles = @articles.where('publish_date <= ?', params[:end_date]) 
+        # end
 
         if params[:search].present?
-            @articles = @articles.where('title LIKE ?', "%#{params[:search]}%") 
+            @articles = @articles.where('author_id LIKE ?', "%#{params[:search]}%") 
         end
-        if params[:search].present?
-            @articles = @articles.where('description LIKE ?', "%#{params[:search]}%") if params[:search].present?
-        end
-        if params[:search].present?
-            @articles = @articles.where('tags LIKE ?', "%#{params[:search]}%") if params[:search].present?
-        end
+        # if params[:search].present?
+        #     @articles = @articles.where('description LIKE ?', "%#{params[:search]}%") 
+        # end
+        # if params[:search].present?
+        #     @articles = @articles.where('tags LIKE ?', "%#{params[:search]}%") 
+        # end
         # @articles = nil
-        per_page = params[:per_page] || 10
-        @articles = Article.paginate(page: params[:page], per_page: per_page)     
+
+        respond_to do |format|
+            # format.html # Render the show.html.erb template by default
+            format.json { render json: @articles }
+        end
+
+        # per_page = params[:per_page] || 10
+        # @articles = Article.paginate(page: params[:page], per_page: per_page)     
     end
 
-    
-
-    #   def index
-    #     @articles = Article.order(publish_date: params[:sort] == 'desc' ? :desc : :asc)
-    #                        .paginate(page: params[:page], per_page: 10)
-    #   end
 
     private
 
     def article_params
-        params.permit(:title, :description, :tags, :author, :publish_date, :search, :image)
+        params.permit(:title, :description, :tags, :created_at, :topic,  :author_id, :likes, :comments, :views , :search, :image)
     end
 end

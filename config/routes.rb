@@ -1,9 +1,10 @@
 Rails.application.routes.draw do
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
+  
 
   # Defines the root path route ("/")
   
-  # NOTE:
+  #routes for users
+  resources :users
   # resources :articles
   # if I will write the above line,it will automatically create RESTful routes for me
 
