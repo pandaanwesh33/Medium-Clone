@@ -1,0 +1,27 @@
+<%= form_with(model: @article,loca:true, url: articles_path, method: :post) do |form| %>
+  <%= form.label :title %>
+  <%= form.text_field :title %>
+
+  <%= form.label :description %>
+  <%= form.text_area :description %>
+
+  <%= form.label :tags %>
+  <%= form.text_field :tags %>
+
+  <%= form.label :author %>
+  <%= form.text_field :author %>
+
+  <%= form.label :publish_date %>
+  <%= form.date_field :publish_date %>
+
+  <!-- Display the previously uploaded image if available -->
+  <% if @article.image.attached? %>
+    <%= image_tag @article.image %>
+  <% end %>
+
+  <!-- Add the image upload field -->
+  <%= form.label :image, "Upload New Image" %>
+  <%= form.file_field :image %>
+
+  <%= form.submit "Create Article" %>
+<% end %>

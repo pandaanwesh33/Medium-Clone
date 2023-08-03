@@ -1,0 +1,9 @@
+<% @articles.each do |article| %>
+  <h1><%= article.id %></h1>
+  <h1><%= article.title %></h1>
+  <h1><%= article.description %></h1>
+  <h1><%= article.tags %></h1>
+  <%=article.image %>
+  <% end %>
+  
+  <%= will_paginate @articles %>
