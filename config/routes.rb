@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   resources :users
   resources :articles do
     resources :likes, only: [:create, :destroy]
+    resources :comments, only: [:create, :destroy]
   end
   # if I will write the above line,it will automatically create RESTful routes for me
 
