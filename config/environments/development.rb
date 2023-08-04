@@ -17,6 +17,8 @@ Rails.application.configure do
   # Enable server timing
   config.server_timing = true
 
+  config.hosts << "af80-2401-4900-1c85-ca1b-f01c-b656-9b05-f98a.ngrok-free.app"
+
   # Enable/disable caching. By default caching is disabled.
   # Run rails dev:cache to toggle caching.
   if Rails.root.join("tmp/caching-dev.txt").exist?
@@ -71,5 +73,6 @@ Rails.application.configure do
   # Store files locally.
   config.active_storage.service = :local
 
+  # JWT_SECRET_KEY = 345150dd4bae18bc0d2b89c375d975125d65f5251a003338f20dba8d339b4515ae962ec1e14aebbca02c4c2fffbb840d80f61c56e992d2364ce5ea10a55d2564
   
 end

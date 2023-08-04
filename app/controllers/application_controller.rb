@@ -1,5 +1,9 @@
 class ApplicationController < ActionController::Base
+    skip_before_action :verify_authenticity_token, only: [:create]
     before_action :set_default_url_options
+
+
+
 
     # Devise Actions
 
@@ -21,10 +25,10 @@ class ApplicationController < ActionController::Base
         new_user_session_path
     end
 
-
     private
 
     def set_default_url_options
         Rails.application.routes.default_url_options[:host] = request.host_with_port
     end
+
 end

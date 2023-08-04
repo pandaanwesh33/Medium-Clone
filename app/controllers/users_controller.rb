@@ -3,8 +3,8 @@ class UsersController < ApplicationController
     #temporarily using this.....it skips token auth during create...
     #it may also introduce security issues
 
-    # skip_before_action :verify_authenticity_token
-    before_action :authenticate_user!, except: [:index, :show, :new, :create]
+    # skip_before_action :verify_authenticity_token, only: [:create]
+    before_action :authenticate_user!, except: [:index, :show]
 
     def index
         @users = User.all
@@ -63,7 +63,8 @@ class UsersController < ApplicationController
         params.permit(
             :name,
             :email, 
-            :encrypted_password, 
+            :password,
+            :password_confirmation
         )
       end
 end
