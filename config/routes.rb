@@ -3,6 +3,9 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   
+  
+  #built-in routes for user authentication, such as sign-up, sign-in, sign-out, password management, etc
+  devise_for :users
   #routes for users
   resources :users
   resources :articles do

@@ -4,8 +4,8 @@ class ArticlesController < ApplicationController
     #     { host: request.base_url }
     # end
 
-    skip_before_action :verify_authenticity_token
-    
+    # skip_before_action :verify_authenticity_token
+    before_action :authenticate_user!, except: [:index, :show]
     
 
     def new
@@ -13,17 +13,9 @@ class ArticlesController < ApplicationController
     end
     
     def create
-        # @article = Article.new(article_params)
-        
-        # puts @article
-        # if @article.save
-        #     redirect_to article_path(@article)
-        # else
-        #     render :new
-        # end
+
         @article = Article.new(article_params)
-        @article.author_id = 1
-        # current_user.id # Assuming you have access to the current_user method.
+        @article.author_id = current_user.id
 
         if @article.save
             redirect_to article_path(@article)
@@ -32,7 +24,6 @@ class ArticlesController < ApplicationController
         end
     end
 
-    # Other actions like edit, update, destroy, index, show, etc.
     def edit
         @article = Article.find(params[:id])
     end
@@ -56,9 +47,9 @@ class ArticlesController < ApplicationController
         @article = Article.find(params[:id])
         # Check if the current user has liked the article
         is_liked = false
-        # if user_signed_in? # Assuming you are using Devise or similar authentication gem
-        #     is_liked = @article.likes.exists?(user_id: current_user.id)
-        # end
+        if user_signed_in? # Assuming you are using Devise or similar authentication gem
+            is_liked = @article.likes.exists?(user_id: current_user.id)
+        end
 
         @article_data = {
             id: @article.id,
@@ -70,8 +61,8 @@ class ArticlesController < ApplicationController
             comments_count: @article.comments.count,
             views_count: @article.views,
             created_at: @article.created_at,
-            # author_id: @article.author.id,
-            # author_name: @article.author.name,
+            author_id: @article.author.id,
+            author_name: @article.author.name,
             image_url: @article.image.attached? ? url_for(@article.image) : nil,
             comments: @article.comments.map { |comment| { text: comment.text, author_id: comment.user.id, author_name: comment.user.name } },
             is_liked: is_liked
@@ -106,8 +97,8 @@ class ArticlesController < ApplicationController
             likes_count: article.likes.count,
             comments_count: article.comments.count,
             views_count: article.views,
-            # author_id: article.author.id,
-            # author_name: article.author.name,
+            author_id: article.author.id,
+            author_name: article.author.name,
             image_url: article.image.attached? ? url_for(article.image) : nil,
             created_at: article.created_at
         }
