@@ -13,9 +13,17 @@ class ArticlesController < ApplicationController
     end
     
     def create
-        @article = Article.new(article_params)
+        # @article = Article.new(article_params)
         
         # puts @article
+        # if @article.save
+        #     redirect_to article_path(@article)
+        # else
+        #     render :new
+        # end
+        @article = Article.new(article_params)
+        @article.author_id = current_user.id # Assuming you have access to the current_user method.
+
         if @article.save
             redirect_to article_path(@article)
         else
@@ -57,42 +65,57 @@ class ArticlesController < ApplicationController
     
     def index
 
-        @articles = Article.where(nil)
-        
-        # if params[:author].present?
-        #     @articles = @articles.where(author: params[:author])
-        # end
-        # if params[:start_date].present?
-        #     @articles = @articles.where('publish_date >= ?', params[:start_date]) 
-        # end
-        # if params[:end_date].present?
-        #     @articles = @articles.where('publish_date <= ?', params[:end_date]) 
+
+        @articles = Article.includes(:image_attachment, :likes, :comments, :author)
+                            .paginate(page: params[:page], per_page: 10)
+    
+        # if @articles.empty?
+        #     flash.now[:notice] = 'No articles found.'
         # end
 
-        if params[:search].present?
-            @articles = @articles.where('author_id LIKE ?', "%#{params[:search]}%") 
+        @articles = @articles.map do |article|
+            {
+            id: article.id,
+            title: article.title,
+            description: article.description,
+            tags: article.tags,
+            topic: article.topic,
+            likes_count: article.likes.count,
+            comments_count: article.comments.count,
+            views_count: article.views,
+            # author_id: article.author.id,
+            # author_name: article.author.name,
+            image_url: article.image.attached? ? url_for(article.image) : nil
+            }
         end
-        # if params[:search].present?
-        #     @articles = @articles.where('description LIKE ?', "%#{params[:search]}%") 
-        # end
-        # if params[:search].present?
-        #     @articles = @articles.where('tags LIKE ?', "%#{params[:search]}%") 
-        # end
-        # @articles = nil
-
+    
         respond_to do |format|
-            # format.html # Render the show.html.erb template by default
+        #   format.html # Render the index.html.erb template by default
             format.json { render json: @articles }
         end
-
-        # per_page = params[:per_page] || 10
-        # @articles = Article.paginate(page: params[:page], per_page: per_page)     
+            
     end
 
 
     private
 
     def article_params
-        params.permit(:title, :description, :tags, :created_at, :topic,  :author_id, :likes, :comments, :views , :search, :image)
+        params.permit(
+            :title, 
+            :description, 
+            :tags, 
+            :topic,   
+            # :likes, 
+            # :comments, 
+            :author_id,
+            # :views , 
+            # :search, 
+            :image,
+            ).merge(
+                likes: 0,
+                comments: 0,
+                views: 0
+            )
     end
+    
 end
