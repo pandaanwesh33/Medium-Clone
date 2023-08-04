@@ -4,7 +4,7 @@ class UsersController < ApplicationController
     #it may also introduce security issues
 
     # skip_before_action :verify_authenticity_token
-    before_action :authenticate_user!, except: [:edit, :update]
+    before_action :authenticate_user!, except: [:index, :show, :new, :create]
 
     def index
         @users = User.all
@@ -25,18 +25,18 @@ class UsersController < ApplicationController
 
       end
     
-      def new
-        @user = User.new
-      end
+    #   def new
+    #     @user = User.new
+    #   end
     
-      def create
-        @user = User.new(user_params)
-        if @user.save
-          redirect_to @user, notice: 'User was successfully created.'
-        else
-          render :new
-        end
-      end
+    #   def create
+    #     @user = User.new(user_params)
+    #     if @user.save
+    #       redirect_to @user, notice: 'User was successfully created.'
+    #     else
+    #       render :new
+    #     end
+    #   end
     
       def edit
         @user = User.find(params[:id])

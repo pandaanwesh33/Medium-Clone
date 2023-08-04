@@ -120,16 +120,9 @@ class ArticlesController < ApplicationController
             :description, 
             :tags, 
             :topic,   
-            # :likes, 
-            # :comments, 
             :author_id,
-            # :views , 
             # :search, 
             :image,
-            # ).merge(
-            #     likes: 0,
-            #     comments: 0,
-            #     views: 0
             )
     end
     
