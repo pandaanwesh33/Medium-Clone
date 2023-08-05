@@ -4,7 +4,8 @@ class ArticlesController < ApplicationController
     #     { host: request.base_url }
     # end
 
-    # skip_before_action :verify_authenticity_token
+    # because, when using JWT for authentication, CSRF protection is not required
+    skip_before_action :verify_authenticity_token
     before_action :authenticate_user, except: [:index, :show]
     
 
@@ -47,7 +48,7 @@ class ArticlesController < ApplicationController
         @article = Article.find(params[:id])
         # Check if the current user has liked the article
         is_liked = false
-        if user_signed_in? # Assuming you are using Devise or similar authentication gem
+        if @current_user # Assuming you are using Devise or similar authentication gem
             is_liked = @article.likes.exists?(user_id: current_user.id)
         end
 
@@ -117,10 +118,8 @@ class ArticlesController < ApplicationController
     def article_params
         params.permit(
             :title, 
-            :description, 
-            :tags, 
+            :description,  
             :topic,   
-            :author_id,
             # :search, 
             :image,
             )

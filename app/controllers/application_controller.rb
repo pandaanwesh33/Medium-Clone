@@ -13,6 +13,11 @@ class ApplicationController < ActionController::Base
         render json: { error: 'Invalid or missing token' }, status: :unauthorized
         end
     end
+
+    # Define the current_user method to be used in child controllers
+    def current_user
+        @current_user
+    end
     
     private
     
