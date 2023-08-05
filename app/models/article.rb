@@ -1,5 +1,5 @@
 class Article < ApplicationRecord
-    has_one_attached :image
+    # has_one_attached :image
 
     has_many :likes
     has_many :liking_users, through: :likes, source: :user

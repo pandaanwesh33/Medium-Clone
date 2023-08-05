@@ -3,7 +3,7 @@ class UsersController < ApplicationController
     #temporarily using this.....it skips token auth during create...
     #it may also introduce security issues
     skip_before_action :verify_authenticity_token, only: [:new,:create, :login]
-    before_action :authenticate_user, except: [:index, :show, :new, :create, :login]
+    before_action :authenticate_user, except: [:index, :new, :create, :login]
 
     def index
         @users = User.all
@@ -24,14 +24,14 @@ class UsersController < ApplicationController
               name: @user.name,
               about: @user.about,
               email: @user.email,
-              photo: @user.photo_url, # Assuming you have a method to get the photo URL
-              followers: @user.followers.map { |follower| { id: follower.id, name: follower.name, photo: follower.photo_url } },
-              followings: @user.followed_users.map { |following| { id: following.id, name: following.name, photo: following.photo_url } },
+              image: @user.image, 
+              followers: @user.followers.map { |follower| { id: follower.id, name: follower.name, photo: follower.image } },
+              followings: @user.followed_users.map { |following| { id: following.id, name: following.name, photo: following.image } },
               is_followed: current_user.following?(@user),
               is_following: @user.following?(current_user)
             }
           end
-          # Add other format handlers as needed (e.g., HTML)
+         
         end
         
         # respond_to do |format|
@@ -68,7 +68,7 @@ class UsersController < ApplicationController
           email: @user.email,
           password: '', #not sending password due to security reason
           about: @user.about,
-          photo: @user.photo_url # Assuming you have a method to get the photo URL
+          photo: @user.image
         }
       end
     end
@@ -103,7 +103,7 @@ class UsersController < ApplicationController
       private
     
       def user_params
-        params.permit( :name, :email, :password)
+        params.permit(:image, :name, :email, :password)
       end
 
       def generate_jwt_token(user)
@@ -113,5 +113,9 @@ class UsersController < ApplicationController
       
       def jwt_secret_key
         ENV['JWT_SECRET_KEY']
+      end
+
+      def following?(other_user)
+        followed_users.include?(other_user)
       end
 end

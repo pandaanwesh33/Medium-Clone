@@ -1,9 +1,10 @@
 class LikesController < ApplicationController
-    before_action :authenticate_user!
+  skip_before_action :verify_authenticity_token
+  before_action :authenticate_user
 
   def create
     @article = Article.find(params[:article_id])
-    current_user.likes.create(article: @article)
+    current_user.likes.create(article: @article) 
     redirect_to @article
   end
 

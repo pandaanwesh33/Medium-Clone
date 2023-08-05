@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_05_013427) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_05_075913) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -50,6 +50,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_013427) do
     t.integer "likes", default: 0
     t.integer "comments", default: 0
     t.integer "views", default: 0
+    t.string "image"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -63,13 +64,10 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_013427) do
   end
 
   create_table "follows", force: :cascade do |t|
-    t.integer "user_id", null: false
-    t.integer "follower_id", null: false
+    t.integer "follower_id"
+    t.integer "followee_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["follower_id"], name: "index_follows_on_follower_id"
-    t.index ["user_id", "follower_id"], name: "index_follows_on_user_id_and_follower_id", unique: true
-    t.index ["user_id"], name: "index_follows_on_user_id"
   end
 
   create_table "likes", force: :cascade do |t|
@@ -92,6 +90,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_013427) do
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
     t.string "password_digest"
+    t.text "about"
+    t.string "image"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -101,8 +101,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_05_013427) do
   add_foreign_key "articles", "users", column: "author_id"
   add_foreign_key "comments", "articles"
   add_foreign_key "comments", "users"
-  add_foreign_key "follows", "followers"
-  add_foreign_key "follows", "users"
   add_foreign_key "likes", "articles"
   add_foreign_key "likes", "users"
 end

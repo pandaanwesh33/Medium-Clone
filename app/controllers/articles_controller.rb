@@ -64,9 +64,10 @@ class ArticlesController < ApplicationController
             created_at: @article.created_at,
             author_id: @article.author.id,
             author_name: @article.author.name,
-            image_url: @article.image.attached? ? url_for(@article.image) : nil,
+            # image_url: @article.image.attached? ? url_for(@article.image) : nil,
             comments: @article.comments.map { |comment| { text: comment.text, author_id: comment.user.id, author_name: comment.user.name } },
-            is_liked: is_liked
+            is_liked: is_liked,
+            image: @article.image
             # is_saved: is_saved   #not yet implemented
         }
 
@@ -81,12 +82,29 @@ class ArticlesController < ApplicationController
         
     
     def index
-        @articles = Article.includes(:image_attachment, :likes, :comments, :author)
-                            .paginate(page: params[:page], per_page: 10)
+        @articles = Article.includes( :likes, :comments, :author)
     
-        # if @articles.empty?
-        #     flash.now[:notice] = 'No articles found.'
-        # end
+         # Filter by author
+        if params[:author].present?
+            author = User.find_by(name: params[:author])
+            @articles = @articles.where(author: author) if author
+        end
+    
+        # Filter by date
+        if params[:date].present?
+            date = Date.parse(params[:date])
+            @articles = @articles.where(created_at: date.beginning_of_day..date.end_of_day) if date
+        end
+    
+        # Sort by number of likes or comments
+        #sorted in desc order
+        if params[:sort_order].present? && %w[likes comments].include?(params[:sort_order])
+            @articles = @articles.left_joins(params[:sort_order].to_sym)
+                            .group(:id)
+                            .order("COUNT(#{params[:sort_order]}.id) DESC")
+        end
+    
+        @articles = @articles.paginate(page: params[:page], per_page: 10)
 
         @articles = @articles.map do |article|
         {
@@ -100,7 +118,8 @@ class ArticlesController < ApplicationController
             views_count: article.views,
             author_id: article.author.id,
             author_name: article.author.name,
-            image_url: article.image.attached? ? url_for(article.image) : nil,
+            # image_url: article.image.attached? ? url_for(article.image) : nil,
+            image: article.image,
             created_at: article.created_at
         }
         end
@@ -117,11 +136,16 @@ class ArticlesController < ApplicationController
 
     def article_params
         params.permit(
+            :id,
             :title, 
             :description,  
             :topic,   
-            # :search, 
             :image,
+            # filters
+            :author,
+            :date,
+            :sort_order,
+            :page
             )
     end
     
