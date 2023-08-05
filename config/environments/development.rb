@@ -73,6 +73,7 @@ Rails.application.configure do
   # Store files locally.
   config.active_storage.service = :local
 
-  # JWT_SECRET_KEY = 345150dd4bae18bc0d2b89c375d975125d65f5251a003338f20dba8d339b4515ae962ec1e14aebbca02c4c2fffbb840d80f61c56e992d2364ce5ea10a55d2564
+  # Set the JWT secret key as an environment variable
+  ENV['JWT_SECRET_KEY'] = 'eaec72b493d9c32a8a50a6d711e07ae46411b8da15a669dbac6c70243aa7d3d532a7a33d78748c2fdb5cb7c4d283c7120f230bd59ed31b9af0cc123e1a1c2ef7'
   
 end

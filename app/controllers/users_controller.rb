@@ -2,9 +2,8 @@ class UsersController < ApplicationController
 
     #temporarily using this.....it skips token auth during create...
     #it may also introduce security issues
-
-    # skip_before_action :verify_authenticity_token, only: [:create]
-    before_action :authenticate_user!, except: [:index, :show]
+    skip_before_action :verify_authenticity_token, only: [:new,:create, :login]
+    before_action :authenticate_user, except: [:index, :show, :new, :create, :login]
 
     def index
         @users = User.all
@@ -25,18 +24,20 @@ class UsersController < ApplicationController
 
       end
     
-    #   def new
-    #     @user = User.new
-    #   end
+      def new
+        @user = User.new
+      end
     
-    #   def create
-    #     @user = User.new(user_params)
-    #     if @user.save
-    #       redirect_to @user, notice: 'User was successfully created.'
-    #     else
-    #       render :new
-    #     end
-    #   end
+      
+      def create
+        @user = User.new(user_params)
+        if @user.save
+          # token = encode_token({ user_id: user.id })
+          render json: @user, status: :created
+        else
+          render json: { errors: user.errors.full_messages }, status: :unprocessable_entity
+        end
+      end
     
       def edit
         @user = User.find(params[:id])
@@ -56,15 +57,30 @@ class UsersController < ApplicationController
         @user.destroy
         redirect_to users_url, notice: 'User was successfully destroyed.'
       end
+
+      def login
+        @user = User.find_by(email: params[:email])
+        puts @user
+        if @user&.authenticate(params[:password])
+          token = generate_jwt_token(@user)
+          render json: { token: token }, status: :ok
+        else
+          render json: { error: 'Invalid credentials' }, status: :unauthorized
+        end
+      end
     
       private
     
       def user_params
-        params.permit(
-            :name,
-            :email, 
-            :password,
-            :password_confirmation
-        )
+        params.permit( :name, :email, :password)
+      end
+
+      def generate_jwt_token(user)
+        payload = { user_id: user.id }
+        JWT.encode(payload, jwt_secret_key, 'HS256')
+      end
+      
+      def jwt_secret_key
+        ENV['JWT_SECRET_KEY']
       end
 end

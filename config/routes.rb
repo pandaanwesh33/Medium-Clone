@@ -7,6 +7,7 @@ Rails.application.routes.draw do
   #built-in routes for user authentication, such as sign-up, sign-in, sign-out, password management, etc
   # devise_for :users
   #routes for users
+  post 'users/login', to: 'users#login'
   resources :users
   resources :articles do
     resources :likes, only: [:create, :destroy]
