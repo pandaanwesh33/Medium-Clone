@@ -8,7 +8,12 @@ Rails.application.routes.draw do
   # devise_for :users
   #routes for users
   post 'users/login', to: 'users#login'
-  resources :users
+  resources :users do
+    member do
+      post :follow, to: 'follows#create'
+      delete :unfollow, to: 'follows#destroy'
+    end
+  end
   resources :articles do
     resources :likes, only: [:create, :destroy]
     resources :comments, only: [:create, :destroy]

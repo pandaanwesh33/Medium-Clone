@@ -13,5 +13,14 @@ class User < ApplicationRecord
 
   has_many :comments
 
-  
+  # follow feature 
+  has_many :follows, foreign_key: :user_id, dependent: :destroy
+  has_many :followers, through: :follows, source: :follower
+
+  has_many :followings, foreign_key: :follower_id, class_name: 'Follow', dependent: :destroy
+  has_many :followed_users, through: :followings, source: :user
+
+    def following?(other_user)
+      follows.include?(other_user)
+  end
 end

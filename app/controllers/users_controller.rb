@@ -16,11 +16,28 @@ class UsersController < ApplicationController
     
       def show
         @user = User.find(params[:id])
-
+      
         respond_to do |format|
-            # format.html # Render the show.html.erb template by default
-            format.json { render json: @user }
+          format.json do
+            render json: {
+              id: @user.id,
+              name: @user.name,
+              about: @user.about,
+              email: @user.email,
+              photo: @user.photo_url, # Assuming you have a method to get the photo URL
+              followers: @user.followers.map { |follower| { id: follower.id, name: follower.name, photo: follower.photo_url } },
+              followings: @user.followed_users.map { |following| { id: following.id, name: following.name, photo: following.photo_url } },
+              is_followed: current_user.following?(@user),
+              is_following: @user.following?(current_user)
+            }
+          end
+          # Add other format handlers as needed (e.g., HTML)
         end
+        
+        # respond_to do |format|
+            # format.html # Render the show.html.erb template by default
+            # format.json { render json: @user }
+        # end
 
       end
     
@@ -41,6 +58,20 @@ class UsersController < ApplicationController
     
       def edit
         @user = User.find(params[:id])
+
+    respond_to do |format|
+      # format.html 
+      format.json do
+        render json: {
+          id: @user.id,
+          name: @user.name,
+          email: @user.email,
+          password: '', #not sending password due to security reason
+          about: @user.about,
+          photo: @user.photo_url # Assuming you have a method to get the photo URL
+        }
+      end
+    end
       end
     
       def update
