@@ -1,5 +1,6 @@
 class CommentsController < ApplicationController
-    before_action :authenticate_user!
+    skip_before_action :verify_authenticity_token
+    before_action :authenticate_user
 
     def create
         @article = Article.find(params[:article_id])
@@ -27,6 +28,6 @@ class CommentsController < ApplicationController
     private
 
     def comment_params
-        params.permit(:text)
+        params.permit(:article_id, :text, :id)
     end
 end

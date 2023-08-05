@@ -105,7 +105,9 @@ class ArticlesController < ApplicationController
         end
     
         @articles = @articles.paginate(page: params[:page], per_page: 10)
-
+        if params[:top_posts].present?
+            @articles = Article.all.order('(likes.count + comments.count) DESC')
+        end
         @articles = @articles.map do |article|
         {
             id: article.id,
@@ -145,7 +147,8 @@ class ArticlesController < ApplicationController
             :author,
             :date,
             :sort_order,
-            :page
+            :page,
+            :top_posts
             )
     end
     
