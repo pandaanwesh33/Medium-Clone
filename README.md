@@ -1,28 +1,35 @@
-<<<<<<< HEAD
-# Medium-Clone
-=======
-# README
+[Schema-and-Endpoints](https://docs.google.com/spreadsheets/d/1LvpofXbFD7o2ABzoElZ97TEZu2DkXdYk1JHBglSruVI/edit?usp=sharing)
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Things to be done apart from Levels : 
+<li>Proper Validations</li>
+<li>Caching</li>
+<li>Complete Authentication management using Devise</li>
+<br>
 
-Things you may want to cover:
+<ol>
+  <li>
+    Devise : for user authentication, such as sign-up, sign-in, sign-out, password management, etc
+    devise_for :users : manages auth
+    resources : users : user management
+  </li>
+  <li>CSRF Token : </li>
+  <li>Ngrok</li>
+  <li>Earlier local storage used for image , then to make url global , string is sent from front end</li>
+  <li># Access the JWT secret key from the environment variable 
+JWT_SECRET_KEY = ENV['JWT_SECRET_KEY']</li>
+  <li>Constraints like is Null, default values are maintained</li>
+  <li>Examples in postman</li>
+  <li>Restful Conventions </li>
+  <li>Strings stored for images </li>
+  
+</ol>
 
-* Ruby version
 
-* System dependencies
 
-* Configuration
 
-* Database creation
 
-* Database initialization
 
-* How to run the test suite
 
-* Services (job queues, cache servers, search engines, etc.)
 
-* Deployment instructions
 
-* ...
->>>>>>> ea07d4e (initial commit)
+
