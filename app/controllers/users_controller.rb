@@ -2,7 +2,7 @@ class UsersController < ApplicationController
 
     #temporarily using this.....it skips token auth during create...
     #it may also introduce security issues
-    skip_before_action :verify_authenticity_token, only: [:new,:create, :login]
+    skip_before_action :verify_authenticity_token
     before_action :authenticate_user, except: [:index, :new, :create, :login]
 
     def index

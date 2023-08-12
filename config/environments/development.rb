@@ -76,4 +76,7 @@ Rails.application.configure do
   # Set the JWT secret key as an environment variable
   ENV['JWT_SECRET_KEY'] = 'eaec72b493d9c32a8a50a6d711e07ae46411b8da15a669dbac6c70243aa7d3d532a7a33d78748c2fdb5cb7c4d283c7120f230bd59ed31b9af0cc123e1a1c2ef7'
   
+  #stripe - payment gateway
+  ENV['STRIPE_PUBLISHABLE_KEY'] = 'pk_test_51Ndsa1SC6vaAXqcbuVqBs2AV8TTRY948JYhvJ6XbyUYGl9HuRwd6nKalefv31BIfGBltpikbITNBJN0CjjIdlHI500vaklTDdV'
+  ENV['STRIPE_SECRET_KEY'] = 'sk_test_51Ndsa1SC6vaAXqcbN97zan3GjT0Xfq820OnC5Se4XmJnxrT40A9qelaCxioboF0phSqwuN9WOyTpddhxp5DI4SND00lEnnlw3F'
 end

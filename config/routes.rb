@@ -1,6 +1,6 @@
 Rails.application.routes.draw do
   
-
+  #rails routes - command gives all routes
   # Defines the root path route ("/")
   
   
@@ -18,6 +18,7 @@ Rails.application.routes.draw do
     resources :likes, only: [:create, :destroy]
     resources :comments, only: [:create, :destroy]
   end
+  resources :payments, only: [:new, :create]
   # if I will write the above line,it will automatically create RESTful routes for me
 
   # List all articles
