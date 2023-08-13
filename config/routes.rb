@@ -27,6 +27,9 @@ Rails.application.routes.draw do
       post :share
     end
   end
+  #some additional routes
+  get '/top_posts', to: 'articles#top_posts'
+  
   # if I will write the above line,it will automatically create RESTful routes for me
 
   # List all articles

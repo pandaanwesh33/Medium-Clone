@@ -77,6 +77,12 @@ class ArticlesController < ApplicationController
 
         estimated_reading_time = @article.reading_time
 
+        #finding 5 posts by same author
+        @author = @article.user
+        @similar_posts = Article.where(user: @author)
+                        .where.not(id: @article.id)
+                        .limit(5)
+
         @article_data = {
             id: @article.id,
             title: @article.title,
@@ -93,7 +99,8 @@ class ArticlesController < ApplicationController
             comments: @article.comments.map { |comment| { text: comment.text, author_id: comment.user.id, author_name: comment.user.name } },
             is_liked: is_liked,
             reading_time: estimated_reading_time,
-            image: @article.image
+            image: @article.image,
+            similar_posts: @similar_posts
             # is_saved: is_saved   #not yet implemented
         }
 
@@ -164,6 +171,15 @@ class ArticlesController < ApplicationController
             
     end
 
+    def top_posts
+        weight_likes = 1
+        weight_comments = 2
+        weight_visits = 0.5
+    
+        @top_posts = Article.all.sort_by do |article|
+          calculate_rank(article, weight_likes, weight_comments, weight_visits)
+        end.reverse.take(10)
+    end
 
     private
 
@@ -186,6 +202,12 @@ class ArticlesController < ApplicationController
     def can_view_article?
         # return true if subscription_plan.name == 'Free'
         daily_article_visit_count < subscription_plan.daily_article_limit
+    end
+
+    def calculate_rank(article, weight_likes, weight_comments, weight_visits)
+        (weight_likes * article.likes) +
+        (weight_comments * article.comments) +
+        (weight_visits * article.article_visits.count)
     end
     
 
