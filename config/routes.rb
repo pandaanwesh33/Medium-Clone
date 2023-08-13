@@ -18,7 +18,11 @@ Rails.application.routes.draw do
     resources :article_revisions, only: [:index]
     resources :likes, only: [:create, :destroy]
     resources :comments, only: [:create, :destroy]
+    collection do
+      get 'recommendations'
+    end
   end
+  resources :topics, only: [:index, :show]
   resources :payments, only: [:new, :create]
   resources :saved_articles, only: [:create, :destroy]
 
@@ -29,7 +33,7 @@ Rails.application.routes.draw do
   end
   #some additional routes
   get '/top_posts', to: 'articles#top_posts'
-  
+
   # if I will write the above line,it will automatically create RESTful routes for me
 
   # List all articles

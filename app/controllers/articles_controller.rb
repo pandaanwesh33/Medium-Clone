@@ -152,7 +152,7 @@ class ArticlesController < ApplicationController
             title: article.title,
             # description: article.description,
             tags: article.tags,
-            topic: article.topic,
+            # topic: article.topic,
             likes_count: article.likes.count,
             comments_count: article.comments.count,
             views_count: article.views,
@@ -181,6 +181,25 @@ class ArticlesController < ApplicationController
         end.reverse.take(10)
     end
 
+    #for now only likes are considered
+    #extracted liked articles and found similarity index
+    def recommendations
+        user = @current_user
+        liked_articles = user.liked_articles
+    
+        all_articles = Article.all
+    
+        recommended_articles = all_articles.sort_by do |article|
+          similarity = 0
+          liked_articles.each do |liked_article|
+            similarity += calculate_similarity(article, liked_article)
+          end
+          -similarity
+        end
+    
+        @recommended_articles = recommended_articles.take(5)
+    end
+
     private
 
     def article_params
@@ -188,7 +207,6 @@ class ArticlesController < ApplicationController
             :id,
             :title, 
             :description,  
-            :topic,   
             :image,
             # filters
             :author,
@@ -208,6 +226,18 @@ class ArticlesController < ApplicationController
         (weight_likes * article.likes) +
         (weight_comments * article.comments) +
         (weight_visits * article.article_visits.count)
+    end
+
+    #for recommendation
+    #calculate the similarity between articles based on their tags
+    def calculate_similarity(article1, article2)
+        tags1 = article1.tags
+        tags2 = article2.tags
+      
+        intersection = tags1 & tags2
+        union = tags1 | tags2
+      
+        intersection.size.to_f / union.size
     end
     
 
