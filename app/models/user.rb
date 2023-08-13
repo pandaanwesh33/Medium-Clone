@@ -13,6 +13,10 @@ class User < ApplicationRecord
 
   has_many :comments
 
+  # subscription
+  belongs_to :subscription_plan, default: -> { SubscriptionPlan.find_by(name: "Free") }
+  has_many :article_visits
+
   # follow feature 
   has_many :followed_users, foreign_key: :follower_id, class_name: 'Follow'
     has_many :followees, through: :followed_users

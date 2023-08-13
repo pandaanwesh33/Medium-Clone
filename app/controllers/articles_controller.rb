@@ -6,7 +6,7 @@ class ArticlesController < ApplicationController
 
     # because, when using JWT for authentication, CSRF protection is not required
     skip_before_action :verify_authenticity_token
-    before_action :authenticate_user, except: [:index, :show]
+    before_action :authenticate_user, except: [:index]
     
 
     def new
@@ -46,6 +46,14 @@ class ArticlesController < ApplicationController
 
     def show
         @article = Article.find(params[:id])
+        current_user.increment!(:daily_article_visit_count) if current_user
+        
+
+        # finds allowed article visits as per subscription and 
+        # no of articles user has visited on a day
+        allowed_article_visits = @current_user.subscription_plan.daily_article_limit
+        user_daily_visits = @current_user.article_visits.where("visited_at >= ?", Time.zone.now.beginning_of_day).count
+
         # Check if the current user has liked the article
         is_liked = false
         if @current_user # Assuming you are using Devise or similar authentication gem
@@ -71,12 +79,17 @@ class ArticlesController < ApplicationController
             # is_saved: is_saved   #not yet implemented
         }
 
-        # handles different types of requests
-        # if the request is from a web browser (i.e., HTML -> renders show.html.erb)
-        # else for API request (e.g., from Postman -> renders JSON)
-        respond_to do |format|
-            # format.html # Render the show.html.erb template by default
-            format.json { render json: @article_data }
+        #if view limit exists then only send article
+        if user_daily_visits < allowed_article_visits
+            # Create an ArticleVisit record to track the visit
+            ArticleVisit.create(user: current_user, article: @article, visited_at: Time.now)
+            # if current_user&.can_view_article?
+                respond_to do |format|
+                    # format.html # Render the show.html.erb template by default
+                    format.json { render json: @article_data }
+                end
+        else
+            render json: { error: 'Daily limit exceeded for your subscription plan.' }, status: :unprocessable_entity
         end
     end
         
@@ -151,5 +164,10 @@ class ArticlesController < ApplicationController
             :top_posts
             )
     end
+
+    def can_view_article?
+        # return true if subscription_plan.name == 'Free'
+        daily_article_visit_count < subscription_plan.daily_article_limit
+      end
     
 end

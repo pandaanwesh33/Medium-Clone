@@ -1,0 +1,16 @@
+free:
+  name: Free
+  posts_per_day: 1
+  price: 0
+basic:
+  name: Basic
+  posts_per_day: 3
+  price: 300
+premium:
+  name: Premium
+  posts_per_day: 5
+  price: 500
+ultimate:
+  name: Ultimate
+  posts_per_day: 10
+  price: 1000

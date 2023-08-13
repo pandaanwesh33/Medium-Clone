@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_08_12_083345) do
+ActiveRecord::Schema[7.0].define(version: 2023_08_13_032247) do
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
     t.string "record_type", null: false
@@ -39,6 +39,16 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_12_083345) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "article_visits", force: :cascade do |t|
+    t.integer "user_id", null: false
+    t.integer "article_id", null: false
+    t.datetime "visited_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["article_id"], name: "index_article_visits_on_article_id"
+    t.index ["user_id"], name: "index_article_visits_on_user_id"
+  end
+
   create_table "articles", force: :cascade do |t|
     t.string "title"
     t.text "description"
@@ -51,6 +61,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_12_083345) do
     t.integer "comments", default: 0
     t.integer "views", default: 0
     t.string "image"
+    t.integer "visit_count"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -79,6 +90,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_12_083345) do
     t.index ["user_id"], name: "index_likes_on_user_id"
   end
 
+  create_table "subscription_plans", force: :cascade do |t|
+    t.string "name"
+    t.integer "price"
+    t.integer "daily_article_limit"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "name"
     t.string "email"
@@ -92,17 +111,21 @@ ActiveRecord::Schema[7.0].define(version: 2023_08_12_083345) do
     t.string "password_digest"
     t.text "about"
     t.string "image"
-    t.integer "subscription_level", default: 0
+    t.integer "subscription_plan_id"
+    t.integer "daily_article_visit_count", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
-    t.index ["subscription_level"], name: "index_users_on_subscription_level"
+    t.index ["subscription_plan_id"], name: "index_users_on_subscription_plan_id"
   end
 
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "article_visits", "articles"
+  add_foreign_key "article_visits", "users"
   add_foreign_key "articles", "users", column: "author_id"
   add_foreign_key "comments", "articles"
   add_foreign_key "comments", "users"
   add_foreign_key "likes", "articles"
   add_foreign_key "likes", "users"
+  add_foreign_key "users", "subscription_plans"
 end
