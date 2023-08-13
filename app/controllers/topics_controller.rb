@@ -13,6 +13,7 @@ class TopicsController < ApplicationController
     def topics_params
         params.permit(
             :id
+        )
     end
 
 

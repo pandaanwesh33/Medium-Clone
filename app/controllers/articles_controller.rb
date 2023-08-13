@@ -179,6 +179,8 @@ class ArticlesController < ApplicationController
         @top_posts = Article.all.sort_by do |article|
           calculate_rank(article, weight_likes, weight_comments, weight_visits)
         end.reverse.take(10)
+
+        return @top_posts
     end
 
     #for now only likes are considered
@@ -223,8 +225,8 @@ class ArticlesController < ApplicationController
     end
 
     def calculate_rank(article, weight_likes, weight_comments, weight_visits)
-        (weight_likes * article.likes) +
-        (weight_comments * article.comments) +
+        (weight_likes * article.likes.count) +
+        (weight_comments * article.comments.count) +
         (weight_visits * article.article_visits.count)
     end
 
