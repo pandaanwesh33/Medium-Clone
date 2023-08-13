@@ -23,6 +23,13 @@ class User < ApplicationRecord
     has_many :following_users, foreign_key: :followee_id, class_name: 'Follow'
     has_many :followers, through: :following_users
 
+  #save for later
+  has_many :saved_articles
+  has_many :saved_articles, through: :saved_articles, source: :article
+
+  #lists
+  has_many :lists
+
   def following?(other_user)
       followers.include?(other_user)
   end

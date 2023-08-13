@@ -18,6 +18,10 @@ class ArticlesController < ApplicationController
         @article = Article.new(article_params)
         @article.author_id = current_user.id
 
+        if params[:commit] == 'Save as Draft'
+            @article.published = false
+        end
+
         if @article.save
             redirect_to article_path(@article)
         else
@@ -31,7 +35,18 @@ class ArticlesController < ApplicationController
 
     def update
         @article = Article.find(params[:id])
+
+        if params[:commit] == 'Save as Draft'
+            @article.published = false
+        end
+
         if @article.update(article_params)
+            ArticleRevision.create(
+                article: @article,
+                title: @article.title,
+                content: @article.content,
+                user: current_user
+            )
             redirect_to article_path(@article)
         else
             render :edit
@@ -60,6 +75,8 @@ class ArticlesController < ApplicationController
             is_liked = @article.likes.exists?(user_id: current_user.id)
         end
 
+        estimated_reading_time = @article.reading_time
+
         @article_data = {
             id: @article.id,
             title: @article.title,
@@ -75,6 +92,7 @@ class ArticlesController < ApplicationController
             # image_url: @article.image.attached? ? url_for(@article.image) : nil,
             comments: @article.comments.map { |comment| { text: comment.text, author_id: comment.user.id, author_name: comment.user.name } },
             is_liked: is_liked,
+            reading_time: estimated_reading_time,
             image: @article.image
             # is_saved: is_saved   #not yet implemented
         }
@@ -168,6 +186,7 @@ class ArticlesController < ApplicationController
     def can_view_article?
         # return true if subscription_plan.name == 'Free'
         daily_article_visit_count < subscription_plan.daily_article_limit
-      end
+    end
     
+
 end

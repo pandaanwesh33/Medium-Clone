@@ -1,6 +1,7 @@
 class PaymentsController < ApplicationController
 
     skip_before_action :verify_authenticity_token
+    before_action :authenticate_user
 
     def new
     end
@@ -21,8 +22,15 @@ class PaymentsController < ApplicationController
             # source: token
         })
     
+
         flash[:success] = "Payment successful!"
-        redirect_to '/articles'
+        # if charge.status == 'requires_confirmation'
+            new_plan = SubscriptionPlan.find_by("price": charge.amount)
+            # @current_user.update(subscription_plan_id: new_plan.id) # Update the subscription_plan attribute
+            @current_user.subscription_plan_id = new_plan.id
+            @current_user.save
+        # end
+        redirect_to '/users' 
         rescue Stripe::CardError => e
         flash[:error] = e.message
         render :new

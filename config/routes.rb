@@ -15,10 +15,18 @@ Rails.application.routes.draw do
     end
   end
   resources :articles do
+    resources :article_revisions, only: [:index]
     resources :likes, only: [:create, :destroy]
     resources :comments, only: [:create, :destroy]
   end
   resources :payments, only: [:new, :create]
+  resources :saved_articles, only: [:create, :destroy]
+
+  resources :lists, only: [:index, :show] do
+    member do
+      post :share
+    end
+  end
   # if I will write the above line,it will automatically create RESTful routes for me
 
   # List all articles

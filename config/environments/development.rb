@@ -79,4 +79,16 @@ Rails.application.configure do
   #stripe - payment gateway
   ENV['STRIPE_PUBLISHABLE_KEY'] = 'pk_test_51Ndsa1SC6vaAXqcbuVqBs2AV8TTRY948JYhvJ6XbyUYGl9HuRwd6nKalefv31BIfGBltpikbITNBJN0CjjIdlHI500vaklTDdV'
   ENV['STRIPE_SECRET_KEY'] = 'sk_test_51Ndsa1SC6vaAXqcbN97zan3GjT0Xfq820OnC5Se4XmJnxrT40A9qelaCxioboF0phSqwuN9WOyTpddhxp5DI4SND00lEnnlw3F'
+
+  config.action_mailer.delivery_method = :smtp
+  # config.action_mailer.smtp_settings = {
+  #   address: 'smtp.example.com',
+  #   port: 587,
+  #   domain: 'example.com',
+  #   user_name: 'your_username',
+  #   password: 'your_password',
+  #   authentication: 'plain',
+  #   enable_starttls_auto: true
+  # }
+
 end
