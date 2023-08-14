@@ -20,6 +20,9 @@ class Article < ApplicationRecord
     has_many :saved_articles
     has_many :users, through: :saved_articles, source: :user
 
+    #revision history
+    has_many :article_revisions
+
     def reading_time
         # Average reading speed in words per minute(data taken from IEEE paper)
         average_reading_speed = 200

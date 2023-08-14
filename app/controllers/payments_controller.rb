@@ -12,8 +12,9 @@ class PaymentsController < ApplicationController
     
         #   token = params[:stripeToken]
         token = 'tok_visa'
-        amount = 1000  # Amount in cents
-    
+        # amount = 1000  # Amount in cents
+        amount = params[:amount]
+
         charge = Stripe::PaymentIntent.create({
             amount: amount,
             currency: 'usd',
@@ -24,12 +25,12 @@ class PaymentsController < ApplicationController
     
 
         flash[:success] = "Payment successful!"
-        # if charge.status == 'requires_confirmation'
+        if charge.status == 'requires_confirmation'
             new_plan = SubscriptionPlan.find_by("price": charge.amount)
-            # @current_user.update(subscription_plan_id: new_plan.id) # Update the subscription_plan attribute
+            @current_user.update(subscription_plan_id: new_plan.id) # Update the subscription_plan attribute
             @current_user.subscription_plan_id = new_plan.id
             @current_user.save
-        # end
+        end
         redirect_to '/users' 
         rescue Stripe::CardError => e
         flash[:error] = e.message
